@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cloud TV</title>
+
+<link rel="icon" href="https://static.readdy.ai/image/0ece273271e400e488b9947cb1e99e9a/a79b6f32c71c4ee2094ead0eb9c84c9b.png" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #050509;
+  --card: #0b0b12;
+  --glass: rgba(255,255,255,.06);
+  --border: rgba(255,255,255,.08);
+  --accent: #00e5ff;
+  --radius: 18px;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+  background:
+    radial-gradient(1200px 600px at top, #0b1a2a, transparent),
+    radial-gradient(800px 400px at bottom, #020024, transparent),
+    var(--bg);
+  color: #fff;
+}
+
+/* ===== APP HEADER ===== */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: rgba(5,5,9,.65);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+}
+
+header img {
+  height: 40px;
+}
+
+header span {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: .4px;
+}
+
+/* ===== MAIN ===== */
+main {
+  padding: 14px;
+  max-width: 1600px;
+  margin: auto;
+}
+
+/* ===== GRID ===== */
+.grid {
+  display: grid;
+  gap: 14px;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Tablet */
+@media (min-width: 601px) and (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Desktop */
+@media (min-width: 1025px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+}
+
+/* ===== CARD ===== */
+.card {
+  position: relative;
+  background: linear-gradient(180deg, #101018, #07070c);
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 25px rgba(0,0,0,.55);
+  transition: transform .25s ease, box-shadow .25s ease;
+  cursor: pointer;
+}
+
+/* Touch feedback */
+.card:active {
+  transform: scale(.96);
+}
+
+/* Hover (desktop only) */
+@media (hover:hover) {
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 28px 55px rgba(0,0,0,.85);
+  }
+}
+
+/* Glow overlay */
+.card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    320px 140px at top,
+    rgba(0,229,255,.22),
+    transparent
+  );
+  opacity: 0;
+  transition: opacity .4s ease;
+  pointer-events: none;
+}
+
+@media (hover:hover) {
+  .card:hover::after {
+    opacity: 1;
+  }
+}
+
+/* ===== LOGO ===== */
+.logo {
+  height: 120px;
+  background: #fff;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: transform .35s ease;
+}
+
+@media (hover:hover) {
+  .card:hover .logo {
+    transform: scale(1.1);
+  }
+}
+
+/* ===== TITLE ===== */
+.title {
+  padding: 10px 8px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  background: rgba(0,0,0,.5);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid var(--border);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ===== LOADING ===== */
+.loading {
+  text-align: center;
+  padding: 60px 20px;
+  opacity: .75;
+  font-size: 14px;
+  letter-spacing: .4px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <img src="https://static.readdy.ai/image/0ece273271e400e488b9947cb1e99e9a/a79b6f32c71c4ee2094ead0eb9c84c9b.png" alt="Cloud TV">
+  <span>Cloud TV</span>
+</header>
+
+<main>
+  <div id="loading" class="loading">Loading premium channels…</div>
+  <div id="channels" class="grid"></div>
+</main>
+
+<script>
+fetch('./channels.json')
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById('loading').style.display = 'none';
+    const grid = document.getElementById('channels');
+
+    data.forEach(ch => {
+      const card = document.createElement('div');
+      card.className = 'card';
+
+      card.onclick = () => {
+        if (ch.id) {
+          location.href = `player.html?id=${ch.id}`;
+        } else {
+          location.href = `player.html?url=${encodeURIComponent(ch.url)}&keyId=${ch.keyId}&key=${ch.key}`;
+        }
+      };
+
+      card.innerHTML = `
+        <div class="logo" style="background-image:url('${ch.image || ''}')"></div>
+        <div class="title">${ch.title || 'Live Channel'}</div>
+      `;
+
+      grid.appendChild(card);
+    });
+  })
+  .catch(err => {
+    document.getElementById('loading').innerText = 'Failed to load channels';
+    console.error(err);
+  });
+</script>
+
+  <!-- ============================= -->
+<!--     ADSTERAA GLOBAL BLOCK     -->
+<!-- ============================= -->
+
+<!-- Banner 300x250 (Best placement: under video or anywhere inside content) -->
+<div id="adsterra-banner-container" style="text-align:center; margin:20px 0;">
+    <script type="text/javascript">
+      atOptions = {
+        'key' : '267d846b24a4cdd5fd7ab140783cec90',
+        'format' : 'iframe',
+        'height' : 250,
+        'width' : 300,
+        'params' : {}
+      };
+    </script>
+    <script type="text/javascript" src="//bowlingprosperhalfbrother.com/267d846b24a4cdd5fd7ab140783cec90/invoke.js"></script>
+</div>
+
+
+<!-- Social Bar (Floating bottom widget - high earnings, non-intrusive) -->
+<script type="text/javascript" src="//bowlingprosperhalfbrother.com/42/5b/58/425b58e61b66997ed4519d91d1f2dcf4.js"></script>
+
+
+<!-- PopUnder (fires once per user interaction) - keep LAST -->
+<script type="text/javascript" src="//bowlingprosperhalfbrother.com/2d/95/e8/2d95e8d5c6532307745afa9b1be1162b.js"></script>
+
+<!-- ============================= -->
+<!--     END ADSTERRA BLOCK        -->
+<!-- ============================= -->
+
+<!-- ===========================
+      EXOCLICK — ALL IN ONE ADS
+     =========================== -->
+
+<!-- DESKTOP POPUNDER -->
+<script type="application/javascript">
+(function() {
+    function randStr(e,t){for(var n="",r=t||"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",o=0;o<e;o++)n+=r.charAt(Math.floor(Math.random()*r.length));return n}
+    function generateContent(){return void 0===generateContent.val&&(generateContent.val="document.dispatchEvent("+randStr(4*Math.random()+3)+");"),generateContent.val}
+    try{Object.defineProperty(document.currentScript,"innerHTML",{get:generateContent}),Object.defineProperty(document.currentScript,"textContent",{get:generateContent})}catch(e){};
+
+    var adConfig = {
+        "ads_host": "a.pemsrv.com",
+        "syndication_host": "s.pemsrv.com",
+        "idzone": 5788556,
+        "popup_fallback": false,
+        "popup_force": false,
+        "chrome_enabled": true,
+        "new_tab": false,
+        "frequency_period": 720,
+        "frequency_count": 1,
+        "trigger_method": 3,
+        "trigger_class": "",
+        "trigger_delay": 0,
+        "capping_enabled": true,
+        "tcf_enabled": true,
+        "only_inline": false
+    };
+
+    popMagic.init(adConfig);
+})();
+</script>
+
+<!-- DESKTOP INSTANT MESSAGE -->
+<script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></script>
+<ins class="eas6a97888e6" data-zoneid="5788558"></ins>
+<script>(AdProvider = window.AdProvider || []).push({"serve": {}});</script>
+
+<!-- DESKTOP STICKY BANNER -->
+<script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></script>
+<ins class="eas6a97888e17" data-zoneid="5788560"></ins>
+<script>(AdProvider = window.AdProvider || []).push({"serve": {}});</script>
+
+
+<!-- ===========================
+      MOBILE ADS
+     =========================== -->
+
+<!-- MOBILE POPUNDER -->
+<script type="application/javascript">
+(function() {
+    function randStr(e,t){for(var n="",r=t||"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",o=0;o<e;o++)n+=r.charAt(Math.floor(Math.random()*r.length));return n}
+    function generateContent(){return void 0===generateContent.val&&(generateContent.val="document.dispatchEvent("+randStr(4*Math.random()+3)+");"),generateContent.val}
+    try{Object.defineProperty(document.currentScript,"innerHTML",{get:generateContent}),Object.defineProperty(document.currentScript,"textContent",{get:generateContent})}catch(e){};
+
+    var adConfig = {
+        "ads_host": "a.pemsrv.com",
+        "syndication_host": "s.pemsrv.com",
+        "idzone": 5788562,
+        "popup_fallback": false,
+        "popup_force": false,
+        "chrome_enabled": true,
+        "new_tab": false,
+        "frequency_period": 720,
+        "frequency_count": 1,
+        "trigger_method": 3,
+        "trigger_class": "",
+        "trigger_delay": 0,
+        "capping_enabled": true,
+        "tcf_enabled": true,
+        "only_inline": false
+    };
+
+    popMagic.init(adConfig);
+})();
+</script>
+
+<!-- MOBILE INSTANT MESSAGE -->
+<script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></script>
+<ins class="eas6a97888e14" data-zoneid="5788564"></ins>
+<script>(AdProvider = window.AdProvider || []).push({"serve": {}});</script>
+
+<!-- MOBILE BANNER -->
+<script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></script>
+<ins class="eas6a97888e10" data-zoneid="5788566"></ins>
+<script>(AdProvider = window.AdProvider || []).push({"serve": {}});</script>
+
+<!-- ===========================
+      / END EXOCLICK ADS
+     =========================== -->
+
+
+</body>
+</html>
