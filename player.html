@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cloud TV – Player</title>
+
+  <link rel="icon" href="https://static.readdy.ai/image/0ece273271e400e488b9947cb1e99e9a/a79b6f32c71c4ee2094ead0eb9c84c9b.png" />
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: #111;
+      border-bottom: 1px solid #222;
+    }
+
+    header img {
+      height: 36px;
+    }
+
+    header span {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .player-wrapper {
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 58px);
+      background: #000;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .error {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      font-size: 16px;
+      color: #aaa;
+      text-align: center;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="https://static.readdy.ai/image/0ece273271e400e488b9947cb1e99e9a/a79b6f32c71c4ee2094ead0eb9c84c9b.png" alt="Cloud TV" />
+  <span>Cloud TV</span>
+</header>
+
+<div class="player-wrapper" id="playerArea">
+  <iframe id="player" allow="autoplay; encrypted-media; fullscreen; picture-in-picture"></iframe>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const channelId = params.get('id');
+const iframe = document.getElementById('player');
+const playerArea = document.getElementById('playerArea');
+
+function showError(msg) {
+  playerArea.innerHTML = `<div class=\"error\">${msg}</div>`;
+}
+
+fetch('./channels.json')
+  .then(r => r.json())
+  .then(data => {
+    const channel = data.find(c => c.id === channelId);
+
+    if (!channel) {
+      showError('Channel not found');
+      return;
+    }
+
+    if (!channel.url || !channel.keyId || !channel.key) {
+      showError('Invalid stream data');
+      return;
+    }
+
+    const mpd = encodeURIComponent(channel.url);
+    const keyId = channel.keyId;
+    const key = channel.key;
+
+    // DRM DASH player (works on GitHub Pages)
+    iframe.src = `https://ultron3000.github.io/star-sports/s-mpd.html?url=${mpd}&keyId=${keyId}&key=${key}`;
+  })
+  .catch(err => {
+    console.error(err);
+    showError('Failed to load channel data');
+  });
+</script>
+
+<!-- ============================= -->
+<!--     ADSTERAA GLOBAL BLOCK     -->
+<!-- ============================= -->
+
+<!-- Banner 300x250 (Best placement: under video or anywhere inside content) -->
+<div id="adsterra-banner-container" style="text-align:center; margin:20px 0;">
+    <script type="text/javascript">
+      atOptions = {
+        'key' : '267d846b24a4cdd5fd7ab140783cec90',
+        'format' : 'iframe',
+        'height' : 250,
+        'width' : 300,
+        'params' : {}
+      };
+    </script>
+    <script type="text/javascript" src="//bowlingprosperhalfbrother.com/267d846b24a4cdd5fd7ab140783cec90/invoke.js"></script>
+</div>
+
+
+<!-- Social Bar (Floating bottom widget - high earnings, non-intrusive) -->
+<script type="text/javascript" src="//bowlingprosperhalfbrother.com/42/5b/58/425b58e61b66997ed4519d91d1f2dcf4.js"></script>
+
+
+<!-- PopUnder (fires once per user interaction) - keep LAST -->
+<script type="text/javascript" src="//bowlingprosperhalfbrother.com/2d/95/e8/2d95e8d5c6532307745afa9b1be1162b.js"></script>
+
+<!-- ============================= -->
+<!--     END ADSTERRA BLOCK        -->
+<!-- ============================= -->
+
+<!-- ===========================
+      EXOCLICK — ALL IN ONE ADS
+     =========================== -->
+
+<!-- DESKTOP POPUNDER -->
+<script type="application/javascript">
+(function() {
+    function randStr(e,t){for(var n="",r=t||"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",o=0;o<e;o++)n+=r.charAt(Math.floor(Math.random()*r.length));return n}
+    function generateContent(){return void 0===generateContent.val&&(generateContent.val="document.dispatchEvent("+randStr(4*Math.random()+3)+");"),generateContent.val}
+    try{Object.defineProperty(document.currentScript,"innerHTML",{get:generateContent}),Object.defineProperty(document.currentScript,"textContent",{get:generateContent})}catch(e){};
+
+    var adConfig = {
+        "ads_host": "a.pemsrv.com",
+        "syndication_host": "s.pemsrv.com",
+        "idzone": 5788556,
+        "popup_fallback": false,
+        "popup_force": false,
+        "chrome_enabled": true,
+        "new_tab": false,
+        "frequency_period": 720,
+        "frequency_count": 1,
+        "trigger_method": 3,
+        "trigger_class": "",
+        "trigger_delay": 0,
+        "capping_enabled": true,
+        "tcf_enabled": true,
+        "only_inline": false
+    };
+
+    popMagic.init(adConfig);
+})();
+</script>
+
+<!-- DESKTOP INSTANT MESSAGE -->
+<script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></script>
+<ins class="eas6a97888e6" data-zoneid="5788558"></ins>
+<script>(AdProvider = window.AdProvider || []).push({"serve": {}});</script>
+
+<!-- DESKTOP STICKY BANNER -->
+<script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></script>
+<ins class="eas6a97888e17" data-zoneid="5788560"></ins>
+<script>(AdProvider = window.AdProvider || []).push({"serve": {}});</script>
+
+
+<!-- ===========================
+      MOBILE ADS
+     =========================== -->
+
+<!-- MOBILE POPUNDER -->
+<script type="application/javascript">
+(function() {
+    function randStr(e,t){for(var n="",r=t||"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",o=0;o<e;o++)n+=r.charAt(Math.floor(Math.random()*r.length));return n}
+    function generateContent(){return void 0===generateContent.val&&(generateContent.val="document.dispatchEvent("+randStr(4*Math.random()+3)+");"),generateContent.val}
+    try{Object.defineProperty(document.currentScript,"innerHTML",{get:generateContent}),Object.defineProperty(document.currentScript,"textContent",{get:generateContent})}catch(e){};
+
+    var adConfig = {
+        "ads_host": "a.pemsrv.com",
+        "syndication_host": "s.pemsrv.com",
+        "idzone": 5788562,
+        "popup_fallback": false,
+        "popup_force": false,
+        "chrome_enabled": true,
+        "new_tab": false,
+        "frequency_period": 720,
+        "frequency_count": 1,
+        "trigger_method": 3,
+        "trigger_class": "",
+        "trigger_delay": 0,
+        "capping_enabled": true,
+        "tcf_enabled": true,
+        "only_inline": false
+    };
+
+    popMagic.init(adConfig);
+})();
+</script>
+
+<!-- MOBILE INSTANT MESSAGE -->
+<script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></script>
+<ins class="eas6a97888e14" data-zoneid="5788564"></ins>
+<script>(AdProvider = window.AdProvider || []).push({"serve": {}});</script>
+
+<!-- MOBILE BANNER -->
+<script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></script>
+<ins class="eas6a97888e10" data-zoneid="5788566"></ins>
+<script>(AdProvider = window.AdProvider || []).push({"serve": {}});</script>
+
+<!-- ===========================
+      / END EXOCLICK ADS
+     =========================== -->
+
+
+</body>
+</html>
