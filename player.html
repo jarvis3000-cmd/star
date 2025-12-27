@@ -59,6 +59,14 @@
       padding: 20px;
     }
 
+  /* === MOBILE FULLSCREEN VIDEO FIX (NO CROPPING) === */
+@media (max-width: 768px) {
+  video:fullscreen,
+  video:-webkit-full-screen {
+    object-fit: contain !important;
+    background-color: black;
+  }
+}
    
   </style>
 </head>
