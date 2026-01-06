@@ -7,9 +7,7 @@
 
 <link rel="icon" href="https://static.readdy.ai/image/0ece273271e400e488b9947cb1e99e9a/a79b6f32c71c4ee2094ead0eb9c84c9b.png">
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.6.0/controls.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.6.0/shaka-player.ui.min.js"></script>
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
@@ -20,7 +18,7 @@
   --radius:18px;
 }
 
-* { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+* { box-sizing:border-box; }
 
 body {
   margin:0;
@@ -50,22 +48,19 @@ main {
   margin:auto;
 }
 
-/* CATEGORY BUTTONS */
+/* CATEGORIES */
 #categories {
   text-align:center;
   margin-bottom:20px;
 }
-
 #categories button {
   background:linear-gradient(145deg,#ffeb3b,#fdd835);
-  color:#000;
   border:none;
   padding:8px 18px;
-  font-size:14px;
   margin:6px;
-  cursor:pointer;
-  border-radius:20px;
   font-weight:600;
+  border-radius:20px;
+  cursor:pointer;
 }
 
 /* GRID */
@@ -73,25 +68,16 @@ main {
   display:grid;
   gap:14px;
 }
+@media(max-width:600px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:601px){.grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}}
 
-@media (max-width:600px) {
-  .grid { grid-template-columns:repeat(2,1fr); }
-}
-@media (min-width:601px) {
-  .grid { grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); }
-}
-
-/* CARD */
 .card {
   background:var(--card);
   border-radius:var(--radius);
   overflow:hidden;
   border:1px solid var(--border);
   cursor:pointer;
-  transition:transform .2s ease;
 }
-
-.card:active { transform:scale(.96); }
 
 .logo {
   height:120px;
@@ -106,38 +92,54 @@ main {
   background:rgba(0,0,0,.4);
 }
 
-/* MODAL PLAYER */
+/* MODAL */
 #playerModal {
   display:none;
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.9);
+  background:#000;
   z-index:9999;
 }
 
-#playerBox {
+#playerFrame {
   width:100%;
-  height:100%;
+  height:calc(100% - 70px);
+  border:none;
 }
+
+/* CONTROLS */
+#controls {
+  height:70px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:12px;
+  background:#07070c;
+  border-top:1px solid var(--border);
+}
+
+.btn {
+  background:#111;
+  color:#fff;
+  border:1px solid var(--border);
+  padding:10px 14px;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.btn i { margin:0 4px; }
 
 #closeBtn {
   position:absolute;
   top:10px;
   right:10px;
-  z-index:99999;
+  z-index:10000;
   background:#000;
   color:#fff;
   border:none;
   font-size:22px;
-  padding:6px 10px;
   cursor:pointer;
-  border-radius:8px;
-}
-
-video {
-  width:100%;
-  height:100%;
-  background:#000;
 }
 </style>
 </head>
@@ -151,7 +153,6 @@ video {
 
 <main>
 
-  <!-- CATEGORIES -->
   <div id="categories">
     <button onclick="filterCategory('All')">All</button>
     <button onclick="filterCategory('Sports')">Sports</button>
@@ -161,110 +162,108 @@ video {
   </div>
 
   <div id="channels" class="grid"></div>
-
 </main>
 
 <!-- PLAYER MODAL -->
 <div id="playerModal">
   <button id="closeBtn" onclick="closePlayer()">✕</button>
-  <div id="playerBox" class="shaka-video-container" data-shaka-player>
-    <video autoplay muted playsinline></video>
+
+  <iframe
+    id="playerFrame"
+    allow="autoplay; encrypted-media; fullscreen; picture-in-picture">
+  </iframe>
+
+  <div id="controls">
+    <button id="prevBtn" class="btn"><i class="fas fa-step-backward"></i>Prev</button>
+    <button id="playPauseBtn" class="btn"><i class="fas fa-play"></i>Play</button>
+    <button id="nextBtn" class="btn">Next<i class="fas fa-step-forward"></i></button>
+    <button id="fullscreenBtn" class="btn"><i class="fas fa-expand"></i></button>
+    <button id="muteBtn" class="btn"><i class="fas fa-volume-up"></i></button>
   </div>
 </div>
 
 <script>
 let allChannels = [];
-let filteredChannels = [];
-let player = null;
-let ui = null;
+let currentList = [];
+let currentIndex = 0;
 
 fetch('./channels.json')
   .then(r => r.json())
   .then(data => {
     allChannels = data;
-    filteredChannels = data;
-    renderChannels(filteredChannels);
+    currentList = data;
+    render(data);
   });
 
-function renderChannels(list) {
+function render(list) {
   const grid = document.getElementById('channels');
   grid.innerHTML = '';
-
-  list.forEach(ch => {
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.onclick = () => openPlayer(ch);
-
-    card.innerHTML = `
-      <div class="logo" style="background-image:url('${ch.image || ''}')"></div>
-      <div class="title">${ch.title || 'Live Channel'}</div>
+  list.forEach((ch, i) => {
+    const c = document.createElement('div');
+    c.className = 'card';
+    c.innerHTML = `
+      <div class="logo" style="background-image:url('${ch.image}')"></div>
+      <div class="title">${ch.title}</div>
     `;
-    grid.appendChild(card);
+    c.onclick = () => openPlayer(i);
+    grid.appendChild(c);
   });
 }
 
 function filterCategory(cat) {
-  if (cat === 'All') {
-    filteredChannels = allChannels;
-  } else {
-    filteredChannels = allChannels.filter(c => c.category === cat);
-  }
-  renderChannels(filteredChannels);
+  currentList = cat === 'All'
+    ? allChannels
+    : allChannels.filter(c => c.category === cat);
+  render(currentList);
 }
 
-/* ===== SHAKA PLAYER ===== */
-async function openPlayer(ch) {
+function openPlayer(index) {
+  currentIndex = index;
+  const ch = currentList[index];
+
   document.getElementById('playerModal').style.display = 'block';
-
-  shaka.polyfill.installAll();
-  const video = document.querySelector('video');
-
-  if (player) await player.destroy();
-
-  player = new shaka.Player(video);
-  ui = new shaka.ui.Overlay(player, document.getElementById('playerBox'), video);
-
-  ui.configure({
-    controlPanelElements: [
-      'play_pause',
-      'time_and_duration',
-      'mute',
-      'volume',
-      'spacer',
-      'quality',
-      'fullscreen',
-      'overflow_menu'
-    ]
-  });
-
-  player.configure({
-    drm: {
-      clearKeys: {
-        [ch.keyId]: ch.key
-      }
-    }
-  });
-
-  // REQUIRED HEADERS (Jio / Star)
-  player.getNetworkingEngine().registerRequestFilter((type, request) => {
-    request.headers['Referer'] = 'https://www.jiotv.com/';
-    request.headers['User-Agent'] =
-      'plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6';
-  });
-
-  try {
-    await player.load(ch.url);
-    video.muted = false;
-    await video.play();
-  } catch (err) {
-    console.error('Playback error:', err);
-  }
+  document.getElementById('playerFrame').src =
+    `s-mpd.html?url=${encodeURIComponent(ch.url)}&keyId=${ch.keyId}&key=${ch.key}`;
 }
 
-async function closePlayer() {
+function closePlayer() {
+  const frame = document.getElementById('playerFrame');
+  frame.src = '';
   document.getElementById('playerModal').style.display = 'none';
-  if (player) await player.destroy();
 }
+
+/* ===== BUTTON CONTROLS (REAL, WORKING) ===== */
+function getVideo() {
+  const frame = document.getElementById('playerFrame');
+  return frame.contentWindow?.document.querySelector('video');
+}
+
+document.getElementById('playPauseBtn').onclick = () => {
+  const v = getVideo();
+  if (!v) return;
+  if (v.paused) { v.play(); }
+  else { v.pause(); }
+};
+
+document.getElementById('muteBtn').onclick = () => {
+  const v = getVideo();
+  if (!v) return;
+  v.muted = !v.muted;
+};
+
+document.getElementById('fullscreenBtn').onclick = () => {
+  const v = getVideo();
+  if (v?.requestFullscreen) v.requestFullscreen();
+};
+
+document.getElementById('prevBtn').onclick = () => {
+  if (currentIndex > 0) openPlayer(currentIndex - 1);
+};
+
+document.getElementById('nextBtn').onclick = () => {
+  if (currentIndex < currentList.length - 1)
+    openPlayer(currentIndex + 1);
+};
 </script>
 
 </body>
