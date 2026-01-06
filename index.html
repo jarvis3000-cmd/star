@@ -8,13 +8,15 @@
 <link rel="icon" href="https://static.readdy.ai/image/0ece273271e400e488b9947cb1e99e9a/a79b6f32c71c4ee2094ead0eb9c84c9b.png" />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
+<!-- DASH + HLS -->
+<script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
 <style>
 :root {
   --bg: #050509;
   --card: #0b0b12;
-  --glass: rgba(255,255,255,.06);
   --border: rgba(255,255,255,.08);
-  --accent: #00e5ff;
   --radius: 18px;
 }
 
@@ -33,7 +35,7 @@ body {
   color: #fff;
 }
 
-/* ===== APP HEADER ===== */
+/* HEADER */
 header {
   position: sticky;
   top: 0;
@@ -54,171 +56,133 @@ header img {
 header span {
   font-size: 20px;
   font-weight: 700;
-  letter-spacing: .4px;
 }
 
-/* ===== MAIN ===== */
+/* MAIN */
 main {
   padding: 14px;
   max-width: 1600px;
   margin: auto;
 }
 
-/* ===== GRID ===== */
+/* GRID */
 .grid {
   display: grid;
   gap: 14px;
 }
 
-/* Mobile */
 @media (max-width: 600px) {
-  .grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  .grid { grid-template-columns: repeat(2, 1fr); }
 }
-
-/* Tablet */
 @media (min-width: 601px) and (max-width: 1024px) {
-  .grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
+  .grid { grid-template-columns: repeat(3, 1fr); }
 }
-
-/* Desktop */
 @media (min-width: 1025px) {
-  .grid {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
 }
 
-/* ===== CARD ===== */
+/* CARD */
 .card {
-  position: relative;
   background: linear-gradient(180deg, #101018, #07070c);
   border-radius: var(--radius);
   overflow: hidden;
   border: 1px solid var(--border);
   box-shadow: 0 10px 25px rgba(0,0,0,.55);
-  transition: transform .25s ease, box-shadow .25s ease;
   cursor: pointer;
+  transition: transform .25s ease;
 }
+.card:active { transform: scale(.96); }
 
-/* Touch feedback */
-.card:active {
-  transform: scale(.96);
-}
-
-/* Hover (desktop only) */
-@media (hover:hover) {
-  .card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 28px 55px rgba(0,0,0,.85);
-  }
-}
-
-/* Glow overlay */
-.card::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(
-    320px 140px at top,
-    rgba(0,229,255,.22),
-    transparent
-  );
-  opacity: 0;
-  transition: opacity .4s ease;
-  pointer-events: none;
-}
-
-@media (hover:hover) {
-  .card:hover::after {
-    opacity: 1;
-  }
-}
-
-/* ===== LOGO ===== */
+/* LOGO */
 .logo {
   height: 120px;
-  background: #fff;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  transition: transform .35s ease;
+  background: #fff center/contain no-repeat;
 }
 
-@media (hover:hover) {
-  .card:hover .logo {
-    transform: scale(1.1);
-  }
-}
-
-/* ===== TITLE ===== */
+/* TITLE */
 .title {
   padding: 10px 8px;
   text-align: center;
   font-size: 13px;
   font-weight: 600;
   background: rgba(0,0,0,.5);
-  backdrop-filter: blur(10px);
   border-top: 1px solid var(--border);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* ===== LOADING ===== */
+/* LOADING */
 .loading {
   text-align: center;
   padding: 60px 20px;
   opacity: .75;
-  font-size: 14px;
-  letter-spacing: .4px;
 }
 
-/* Categories Buttons - Mobile Friendly */
+/* CATEGORY BUTTONS */
 #categories button {
   background: linear-gradient(145deg, #ffeb3b, #fdd835);
   color: #000;
   border: none;
-  padding: 8px 18px;          /* smaller padding */
-  font-size: 14px;            /* smaller text */
+  padding: 8px 18px;
+  font-size: 14px;
   margin: 6px;
   cursor: pointer;
-  border-radius: 20px;        /* modern rounded look */
+  border-radius: 20px;
   font-weight: 600;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
-  outline: none;
 }
 
-/* Hover (desktop) */
-#categories button:hover {
-  background: linear-gradient(145deg, #fdd835, #fbc02d);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.22);
+/* ===== MODAL PLAYER ===== */
+#playerModal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.9);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Active (mobile tap) */
-#categories button:active {
-  transform: scale(0.96);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+#playerBox {
+  width: 90%;
+  max-width: 1000px;
+  background: #000;
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
 }
 
+#playerBox video {
+  width: 100%;
+  height: auto;
+  background: #000;
+}
+
+#closeBtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+  background: rgba(0,0,0,.7);
+  color: #fff;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 8px;
+}
 </style>
 </head>
 
 <body>
 
 <header>
-  <img src="https://static.readdy.ai/image/0ece273271e400e488b9947cb1e99e9a/a79b6f32c71c4ee2094ead0eb9c84c9b.png" alt="Cloud TV">
+  <img src="https://static.readdy.ai/image/0ece273271e400e488b9947cb1e99e9a/a79b6f32c71c4ee2094ead0eb9c84c9b.png">
   <span>Cloud TV</span>
 </header>
 
 <main>
-  <!-- Categories Filter -->
-  <div id="categories" style="text-align: center; margin-bottom: 20px;">
+  <div id="categories" style="text-align:center;margin-bottom:20px;">
     <button onclick="filterCategory('All')">All</button>
     <button onclick="filterCategory('Sports')">Sports</button>
     <button onclick="filterCategory('Movies')">Movies</button>
@@ -226,90 +190,110 @@ main {
     <button onclick="filterCategory('Education')">Education</button>
   </div>
 
-  <div id="loading" class="loading">Loading premium channels…</div>
+  <div id="loading" class="loading">Loading channels…</div>
   <div id="channels" class="grid"></div>
 </main>
 
-<script>
-  let allChannels = [];
-  
-  fetch('./channels.json')
-    .then(res => res.json())
-    .then(data => {
-      allChannels = data;  // Store the original data
-      displayChannels(allChannels);  // Display all channels initially
-    })
-    .catch(err => {
-      document.getElementById('loading').innerText = 'Failed to load channels';
-      console.error(err);
-    });
-
-  function displayChannels(channels) {
-    document.getElementById('loading').style.display = 'none';
-    const grid = document.getElementById('channels');
-    grid.innerHTML = '';  // Clear existing channels
-    
-    channels.forEach(ch => {
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.onclick = () => {
-        if (ch.id) {
-          location.href = `player.html?id=${ch.id}`;
-        } else {
-          location.href = `player.html?url=${encodeURIComponent(ch.url)}&keyId=${ch.keyId}&key=${ch.key}`;
-        }
-      };
-
-      card.innerHTML = `
-        <div class="logo" style="background-image:url('${ch.image || ''}')"></div>
-        <div class="title">${ch.title || 'Live Channel'}</div>
-      `;
-
-      grid.appendChild(card);
-    });
-  }
-
-  function filterCategory(category) {
-    if (category === 'All') {
-      displayChannels(allChannels);
-    } else {
-      const filteredChannels = allChannels.filter(ch => ch.category === category);
-      displayChannels(filteredChannels);
-    }
-  }
-</script>
-
-  <!-- ============================= -->
-<!--     ADSTERAA GLOBAL BLOCK     -->
-<!-- ============================= -->
-
-<!-- Banner 300x250 (Best placement: under video or anywhere inside content) -->
-<div id="adsterra-banner-container" style="text-align:center; margin:20px 0;">
-    <script type="text/javascript">
-      atOptions = {
-        'key' : '267d846b24a4cdd5fd7ab140783cec90',
-        'format' : 'iframe',
-        'height' : 250,
-        'width' : 300,
-        'params' : {}
-      };
-    </script>
-    <script type="text/javascript" src="//bowlingprosperhalfbrother.com/267d846b24a4cdd5fd7ab140783cec90/invoke.js"></script>
+<!-- MODAL -->
+<div id="playerModal">
+  <div id="playerBox">
+    <button id="closeBtn" onclick="closePlayer()">✕</button>
+    <video id="videoPlayer" controls autoplay playsinline></video>
+  </div>
 </div>
 
+<script>
+let allChannels = [];
+let dashPlayer = null;
+let hlsPlayer = null;
 
-<!-- Social Bar (Floating bottom widget - high earnings, non-intrusive) -->
-<script type="text/javascript" src="//bowlingprosperhalfbrother.com/42/5b/58/425b58e61b66997ed4519d91d1f2dcf4.js"></script>
+fetch('./channels.json')
+  .then(res => res.json())
+  .then(data => {
+    allChannels = data;
+    displayChannels(allChannels);
+  })
+  .catch(() => {
+    document.getElementById('loading').innerText = 'Failed to load channels';
+  });
 
+function displayChannels(channels) {
+  document.getElementById('loading').style.display = 'none';
+  const grid = document.getElementById('channels');
+  grid.innerHTML = '';
 
-<!-- PopUnder (fires once per user interaction) - keep LAST -->
-<script type="text/javascript" src="//bowlingprosperhalfbrother.com/2d/95/e8/2d95e8d5c6532307745afa9b1be1162b.js"></script>
+  channels.forEach(ch => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.onclick = () => openPlayer(ch);
 
-<!-- ============================= -->
-<!--     END ADSTERRA BLOCK        -->
-<!-- ============================= -->
+    card.innerHTML = `
+      <div class="logo" style="background-image:url('${ch.image || ''}')"></div>
+      <div class="title">${ch.title || 'Live Channel'}</div>
+    `;
+    grid.appendChild(card);
+  });
+}
 
+function filterCategory(cat) {
+  if (cat === 'All') displayChannels(allChannels);
+  else displayChannels(allChannels.filter(c => c.category === cat));
+}
 
+/* ===== PLAYER ===== */
+function openPlayer(ch) {
+  const modal = document.getElementById('playerModal');
+  const video = document.getElementById('videoPlayer');
+
+  modal.style.display = 'flex';
+  video.pause();
+  video.removeAttribute('src');
+  video.load();
+
+  if (dashPlayer) { dashPlayer.reset(); dashPlayer = null; }
+  if (hlsPlayer) { hlsPlayer.destroy(); hlsPlayer = null; }
+
+  if (ch.url.endsWith('.mpd')) {
+    dashPlayer = dashjs.MediaPlayer().create();
+    dashPlayer.initialize(video, ch.url, true);
+
+    if (ch.keyId && ch.key) {
+      dashPlayer.setProtectionData({
+        "org.w3.clearkey": {
+          "clearkeys": {
+            [ch.keyId]: ch.key
+          }
+        }
+      });
+    }
+  }
+  else if (ch.url.endsWith('.m3u8')) {
+    if (Hls.isSupported()) {
+      hlsPlayer = new Hls();
+      hlsPlayer.loadSource(ch.url);
+      hlsPlayer.attachMedia(video);
+    } else {
+      video.src = ch.url;
+    }
+  }
+  else {
+    video.src = ch.url;
+  }
+}
+
+function closePlayer() {
+  const modal = document.getElementById('playerModal');
+  const video = document.getElementById('videoPlayer');
+
+  video.pause();
+  video.removeAttribute('src');
+  video.load();
+  modal.style.display = 'none';
+
+  if (dashPlayer) { dashPlayer.reset(); dashPlayer = null; }
+  if (hlsPlayer) { hlsPlayer.destroy(); hlsPlayer = null; }
+}
+</script>
 
 </body>
 </html>
