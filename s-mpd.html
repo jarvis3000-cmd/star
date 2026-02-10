@@ -409,8 +409,15 @@ const queryParams = new URLSearchParams(window.location.search);
         const name = queryParams.get('url');
         const keyId = queryParams.get('keyId');
         const key = queryParams.get('key');
+    if (name) {
+  streamUrl = decodeURIComponent(name);
+}
+
 
         document.addEventListener('DOMContentLoaded', async () => {
+            let streamUrl = null;
+let cookieHeader = '';
+
             shaka.polyfill.installAll();
 
             if (!shaka.Player.isBrowserSupported()) {
@@ -450,45 +457,7 @@ const queryParams = new URLSearchParams(window.location.search);
             };
  
 
-            try {
-
-                const response = await fetch('https://raw.githubusercontent.com/cricstream4u/sports/main/sports.json');
-
-                const m3uText = await response.text();
-
-                const lines = m3uText.split('\n');
-
-                for (let i = 0; i < lines.length; i++) {
-
-                     {
-
-                        const clearKeyLine = lines[i + 1];
-
-                        const clearKeyMatch = clearKeyLine.match(/license_key=([^:]+):([a-f0-9]+)/);
-
-                           
-
-  
-
-                        const cookieLine = lines.find(line => line.startsWith('#EXTHTTP:'));
-
-                        const cookieMatch = cookieLine.match(/"cookie":"([^"]+)"/);
-
-                        if (cookieMatch) {
-
-                            cookieHeader = cookieMatch[1];
-
-                        } 
-                        const urlLine =name;
-                        {if (urlLine) 
-                            streamUrl =urlLine;
-                        }
-                        break;
-                    }
-                }
-            } catch (error) {
-                console.error('Failed to fetch M3U:', error);
-            }
+            
 
             player.configure({
                 drm: drmConfig,
@@ -516,17 +485,11 @@ const queryParams = new URLSearchParams(window.location.search);
             });
 
             player.getNetworkingEngine().registerRequestFilter((type, request) => {
-                request.headers['Referer'] = 'https://www.jiotv.com/';
-                request.headers['User-Agent'] = "plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6";
-                request.headers['Cookie'] = cookieHeader;
+  request.headers['Referer'] = 'https://www.jiotv.com/';
+  request.headers['User-Agent'] =
+    'plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6';
+});
 
-                if ((type === shaka.net.NetworkingEngine.RequestType.MANIFEST ||
-                     type === shaka.net.NetworkingEngine.RequestType.SEGMENT) &&
-                    !request.uris[0].includes('__hdnea__=')) {
-                    const separator = request.uris[0].includes('?') ? '&' : '?';
-                    request.uris[0] += separator + cookieHeader;
-                }
-            });
 
             const enableAutoplay = () => {
                 video.setAttribute('autoplay', '');
