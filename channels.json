@@ -1,22 +1,8 @@
 
 [ 
-  {
-  "id": "Star1HindiHD_PL",
-  "title": "Star Sports 1 Hindi HD (PL)",
-  "image": "https://jiotvimages.cdn.jio.com/dare_images/images/Star_Sports_HD1_Hindi.png",
-  "url": "https://jiotvpllive.cdn.jio.com/bpk-tv/Star_Sports_HD1_Hindi_BTS/output/index.mpd",
-  "keyId": "400131994b445d8c8817202248760fda",
-  "key": "2d56cb6f07a75b9aff165d534ae2bfc4"
-},
-{
-  "id": "Star1HindiHD_MB",
-  "title": "Star Sports 1 Hindi HD (Mobile)",
-  "image": "https://jiotvimages.cdn.jio.com/dare_images/images/Star_Sports_HD1_Hindi.png",
-  "url": "https://jiotvmblive.cdn.jio.com/bpk-tv/Star_Sports_HD1_Hindi_BTS/output/index.mpd",
-  "keyId": "400131994b445d8c8817202248760fda",
-  "key": "2d56cb6f07a75b9aff165d534ae2bfc4"
-},
-
+  {"id":"Star1HindiHD","title":"Star1 Hindi","image":"https://jiotvimages.cdn.jio.com/dare_images/images/Star_Sports_HD1_Hindi.png","url":"https://jiotvpllive.cdn.jio.com/bpk-tv/Star_Sports_HD1_Hindi_BTS/output/index.mpd","keyId":"400131994b445d8c8817202248760fda","key":"2d56cb6f07a75b9aff165d534ae2bfc4"},
+ 
+  {"id":"Star1HindiHD","title":"Star1 Hindi HD","image":"https://jiotvimages.cdn.jio.com/dare_images/images/Star_Sports_HD1_Hindi.png","url":"https://jiotvpllive.cdn.jio.com/bpk-tv/Star_Sports_HD1_Hindi_BTS/output/index.mpd","keyId":"400131994b445d8c8817202248760fda","key":"2d56cb6f07a75b9aff165d534ae2bfc4"},
   {"id":"Star1Hindi","title":"Star1 Hindi","image":"https://jiotvimages.cdn.jio.com/dare_images/images/Star_Sports_HD1_Hindi.png","url":"https://jiotvmblive.cdn.jio.com/bpk-tv/Star_Sports_1_Hindi_BTS/output/index.mpd","keyId":"8ea9b607549252068e260a5f4d7dd321","key":"350c0aaffedf51cc1502e9543c7c885e"},
   {"id":"Star1eng","title":"Star1 eng","image":"https://jiotvimages.cdn.jio.com/dare_images/images/Star_Sports_1.png","url":"https://jiotvpllive.cdn.jio.com/bpk-tv/Star_Sports_1_BTS/output/index.mpd","keyId":"df20894ec30954d3b28097c138f4cfda","key":"ff9b6292b1cddbd11a046029cb314634"},
   {"id":"Star1engHD","title":"Star1 engHD","image":"https://jiotvimages.cdn.jio.com/dare_images/images/Star_Sports_HD1.png","url":"https://jiotvpllive.cdn.jio.com/bpk-tv/Star_Sports_HD1_BTS/output/index.mpd","keyId":"965dc2ddb1d85138ad787999a7f30ca5","key":"859695076e67fe961836b564db6d689c"},
