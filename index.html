@@ -220,13 +220,16 @@ function filterCategory(cat) {
 }
 
 function openPlayer(index) {
-  currentIndex = index;
   const ch = currentList[index];
 
-  document.getElementById('playerModal').style.display = 'block';
+  console.log("URL3:", ch.url3);
+  console.log("KEYID:", ch.keyId);
+  console.log("KEY:", ch.key);
+
   document.getElementById('playerFrame').src =
-  `s-mpd.html?url=${encodeURIComponent(ch.url3)}&keyId=${ch.keyId}&key=${ch.key}`;
+    `s-mpd.html?url=${encodeURIComponent(ch.url3)}&keyId=${ch.keyId}&key=${ch.key}`;
 }
+
 
 function closePlayer() {
   const frame = document.getElementById('playerFrame');
