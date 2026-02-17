@@ -141,30 +141,6 @@ main {
   font-size:22px;
   cursor:pointer;
 }
-
-/* === SMART FULLSCREEN VIDEO FIX (NO CROPPING, NO GAPS WHEN POSSIBLE) === */
-video:fullscreen,
-video:-webkit-full-screen,
-iframe:fullscreen,
-iframe:-webkit-full-screen {
-  width: 100vw !important;
-  height: 100vh !important;
-  max-width: 100vw !important;
-  max-height: 100vh !important;
-
-  object-fit: contain !important;
-  background-color: black;
-}
-
-/* Only cover when video aspect is cinematic */
-@media (min-aspect-ratio: 16/9) {
-  video:fullscreen,
-  video:-webkit-full-screen,
-  iframe:fullscreen,
-  iframe:-webkit-full-screen {
-    object-fit: cover !important;
-  }
-}
 </style>
 </head>
 
@@ -204,6 +180,7 @@ iframe:-webkit-full-screen {
     <button id="fullscreenBtn" class="btn"><i class="fas fa-expand"></i></button>
     <button id="muteBtn" class="btn"><i class="fas fa-volume-up"></i></button>
     <button id="closeCtrlBtn" class="btn"><i class="fas fa-times"></i></button>
+
   </div>
 </div>
 
@@ -248,7 +225,7 @@ function openPlayer(index) {
 
   document.getElementById('playerModal').style.display = 'block';
   document.getElementById('playerFrame').src =
-  `./s-mpd.html?url=${encodeURIComponent(ch.url)}&keyId=${ch.keyId}&key=${ch.key}`;
+    `s-mpd.html?url=${encodeURIComponent(ch.url)}&keyId=${ch.keyId}&key=${ch.key}`;
 }
 
 function closePlayer() {
@@ -293,9 +270,10 @@ document.getElementById('nextBtn').onclick = () => {
 document.getElementById('closeCtrlBtn').onclick = () => {
   closePlayer();
 };
+
 </script>
 
-  <!-- ========================================= -->
+<!-- ========================================= -->
 <!--        ADSTERRA FULL GLOBAL AD BLOCK      -->
 <!-- ========================================= -->
 
