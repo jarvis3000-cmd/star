@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Player Loader</title>
+<title>Player</title>
 </head>
 
 <body style="margin:0;background:#000;height:100vh;">
@@ -16,41 +16,33 @@ style="border:none;width:100%;height:100%;">
 
 <script>
 const params = new URLSearchParams(window.location.search);
-
-// 🔥 FIX 1: force ID to number
-const streamId = Number(params.get('id'));
+const streamId = params.get('id');
 const playlist = params.get('name') || 'jspo';
 
 if (!streamId) {
-  console.error('Invalid or missing channel id');
+    console.error("Missing channel id");
 }
 
 fetch(`https://raw.githubusercontent.com/Shubhamkur/json/refs/heads/main/${playlist}`)
 .then(res => res.json())
-.then(list => {
+.then(data => {
 
-  // 🔥 FIX 2: numeric comparison
-  const channel = list.find(ch => Number(ch.id) === streamId);
+    // 🔥 FIX: string-safe ID match
+    const channel = data.find(ch => String(ch.id) === String(streamId));
 
-  if (!channel) {
-    console.error('Channel not found', streamId);
-    return;
-  }
+    if (!channel) {
+        console.error("Channel not found:", streamId);
+        console.log("Available IDs:", data.map(c => c.id));
+        return;
+    }
 
-  // pick first available stream
-  const streamUrl = channel.url3 || channel.url2 || channel.url;
+    const streamUrl = channel.url3 || channel.url2 || channel.url;
 
-  if (!streamUrl) {
-    console.error('No stream URL in channel');
-    return;
-  }
-
-  // 🔥 LOAD YOUR ORIGINAL WORKING PLAYER
-  document.getElementById('streamFrame').src =
-    `player.html?url=${encodeURIComponent(streamUrl)}`;
+    document.getElementById("streamFrame").src =
+        `player.html?url=${encodeURIComponent(streamUrl)}`;
 
 })
-.catch(err => console.error('Playlist load error:', err));
+.catch(err => console.error("Fetch error:", err));
 </script>
 
 </body>
