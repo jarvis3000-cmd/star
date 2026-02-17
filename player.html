@@ -83,40 +83,30 @@
 
 <script>
 const params = new URLSearchParams(window.location.search);
-const channelId = params.get('id');
+
+const url = params.get("url");
+const keyId = params.get("keyId");
+const key = params.get("key");
+const name = params.get("name");
+
 const iframe = document.getElementById('player');
 const playerArea = document.getElementById('playerArea');
 
 function showError(msg) {
-  playerArea.innerHTML = `<div class=\"error\">${msg}</div>`;
+  playerArea.innerHTML = `<div class="error">${msg}</div>`;
 }
 
-fetch('./channels.json')
-  .then(r => r.json())
-  .then(data => {
-    const channel = data.find(c => c.id === channelId);
+if (!url || !keyId || !key) {
+  showError("Invalid stream data");
+} else {
 
-    if (!channel) {
-      showError('Channel not found');
-      return;
-    }
+  const mpd = encodeURIComponent(url);
 
-    if (!channel.url || !channel.keyId || !channel.key) {
-      showError('Invalid stream data');
-      return;
-    }
+  iframe.src =
+    `https://ultron3000.github.io/star-sports/s-mpd.html?url=${mpd}&keyId=${keyId}&key=${key}`;
+}
 
-    const mpd = encodeURIComponent(channel.url);
-    const keyId = channel.keyId;
-    const key = channel.key;
 
-    // DRM DASH player (works on GitHub Pages)
-    iframe.src = `https://ultron3000.github.io/star-sports/s-mpd.html?url=${mpd}&keyId=${keyId}&key=${key}`;
-  })
-  .catch(err => {
-    console.error(err);
-    showError('Failed to load channel data');
-  });
 </script>
 
 <!-- ========================================= -->
