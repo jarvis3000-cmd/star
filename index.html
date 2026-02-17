@@ -76,10 +76,11 @@ function openPlayer(index) {
   const ch = currentList[index];
 
   document.getElementById('playerFrame').src =
-    `s-mpd.html?url=${encodeURIComponent(ch.url3)}&keyId=${ch.keyId}&key=${ch.key}`;
+    `player.html?name=channels.json&id=${ch.id}`;
 
   document.getElementById('playerModal').style.display = 'block';
 }
+
 
 function closePlayer() {
   document.getElementById('playerFrame').src = '';
