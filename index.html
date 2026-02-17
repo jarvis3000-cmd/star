@@ -38,9 +38,16 @@ fetch('https://raw.githubusercontent.com/Shubhamkur/json/refs/heads/main/jspo')
         `;
 
         card.onclick = () => {
-            window.location.href =
-    `s-mpd.html?id=${ch.id}&name=jspo`;
-        };
+
+    const params = new URLSearchParams({
+        url: ch.url3 || ch.url2 || ch.url,
+        keyId: ch.keyId,
+        key: ch.key
+    });
+
+    window.location.href = "s-mpd.html?" + params.toString();
+};
+
 
         grid.appendChild(card);
     });
