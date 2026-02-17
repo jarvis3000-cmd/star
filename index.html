@@ -204,9 +204,9 @@ function render(list) {
     const c = document.createElement('div');
     c.className = 'card';
     c.innerHTML = `
-      <div class="logo" style="background-image:url('${ch.image}')"></div>
-      <div class="title">${ch.title}</div>
-    `;
+  <div class="logo" style="background-image:url('${ch.logo}')"></div>
+  <div class="title">${ch.name}</div>
+`;
     c.onclick = () => openPlayer(i);
     grid.appendChild(c);
   });
