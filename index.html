@@ -38,16 +38,10 @@ fetch('https://raw.githubusercontent.com/Shubhamkur/json/refs/heads/main/jspo')
         `;
 
         card.onclick = () => {
-
-    const params = new URLSearchParams({
-        url: ch.url,
-        keyId: ch.keyId,
-        key: ch.key,
-        name: ch.name
-    });
-
-    window.location.href = "player.html?" + params.toString();
+    window.location.href =
+      `player.html?id=${ch.id}&name=jspo`;
 };
+
 
 
 
