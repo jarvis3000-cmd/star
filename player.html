@@ -1,47 +1,63 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cloud TV – Loading...</title>
-
-  <style>
-    body {
-      margin: 0;
-      background: #000;
-      color: #fff;
-      font-family: Arial, Helvetica, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
-  </style>
-</head>
-<body>
-
-<div>Loading Stream...</div>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cloud TV</title>
 
 <script>
-const params = new URLSearchParams(window.location.search);
+  // Must run before DOMContentLoaded
+  const urlParams = new URLSearchParams(window.location.search);
+  const streamName = urlParams.get('name');
 
-const url = params.get("url");
-const keyId = params.get("keyId");
-const key = params.get("key");
+  let result = streamName ? streamName.replace(/"/g, '') : '';
 
-if (!url || !keyId || !key) {
-    document.body.innerHTML =
-      "<h2>Invalid stream data</h2>";
-} else {
+  const scriptUrl = `https://waptv.github.io/json/${result}`;
 
-    const mpd = encodeURIComponent(url);
-
-    // ✅ DIRECT REDIRECT (NO IFRAME)
-    window.location.replace(
-      `https://ultron3000.github.io/star-sports/s-mpd.html?url=${mpd}&keyId=${keyId}&key=${key}`
-    );
-}
+  document.write(`<script src="${scriptUrl}" defer><\/script>`);
 </script>
 
-</body>
-</html>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const streamId = urlParams.get('id');
+    const streamName = urlParams.get('name');
+
+    let result = streamName ? streamName.replace(/"/g, '') : 'jspo';
+
+    if (!streamId) {
+        console.error("Stream ID missing");
+        return;
+    }
+
+    fetch(`https://raw.githubusercontent.com/Shubhamkur/json/refs/heads/main/${result}`)
+        .then(response => response.json())
+        .then(data => {
+
+            const streamInfo = data.find(item => item.id === streamId);
+
+            if (!streamInfo) {
+                console.error("Channel not found");
+                return;
+            }
+
+            const iframe = document.getElementById('stream-iframe');
+
+            if (typeof applyStreamSource === 'function') {
+                applyStreamSource(streamInfo, iframe);
+            } else {
+                console.error("applyStreamSource not loaded");
+            }
+
+        })
+        .catch(error => {
+            console.error("Fetch failed:", error);
+        });
+});
+</script>
+</head>
+
+<body style="margin:0;padding:0;background:#000;height:100vh;width:100vw;">
+  <iframe id="stream-iframe"
+    allow="autoplay; encrypted-media; fullscreen"
