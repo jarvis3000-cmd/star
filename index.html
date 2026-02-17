@@ -19,10 +19,9 @@ body { margin:0; background:#000; font-family:Arial; color:#fff; }
 
 <script>
 
-// IMPORTANT: This must match your working playlist name
-const PLAYLIST_NAME = "toffee";  
+const PLAYLIST_NAME = "jspo";  // VERY IMPORTANT
 
-fetch('./channels.json')
+fetch('https://raw.githubusercontent.com/Shubhamkur/json/refs/heads/main/jspo')
 .then(res => res.json())
 .then(data => {
 
