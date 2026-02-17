@@ -19,7 +19,10 @@ body { margin:0; background:#000; font-family:Arial; color:#fff; }
 
 <script>
 
-fetch('./channels.json')   // IMPORTANT: ./channels.json
+// IMPORTANT: This must match your working playlist name
+const PLAYLIST_NAME = "toffee";  
+
+fetch('./channels.json')
 .then(res => res.json())
 .then(data => {
 
@@ -37,7 +40,7 @@ fetch('./channels.json')   // IMPORTANT: ./channels.json
 
         card.onclick = () => {
             window.location.href =
-                `s-mpd.html?id=${ch.id}&name=toffee`;
+                `s-mpd.html?id=${ch.id}&name=${PLAYLIST_NAME}`;
         };
 
         grid.appendChild(card);
