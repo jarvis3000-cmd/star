@@ -134,7 +134,7 @@ window.addEventListener("load",()=>{
 
 // Load channels.json
 async function loadChannels(){
-  const res = await fetch("channels.json");
+  const res = await fetch("https://raw.githubusercontent.com/vaathala00/jow/main/output.json?t=" + Date.now());
   channels = await res.json();
   filtered = channels;
   renderCategories();
